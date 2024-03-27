@@ -22,7 +22,7 @@ uint16_t TFT_ReadData()
 uint16_t TFT_ReadID(void)
 {
 		uint16_t id;
-		HAL_Delay(20);
+		delay(20);
 		TFT_WriteCmd(0Xd3);	
 		id = TFT_ReadData();
 		id = TFT_ReadData();
@@ -36,13 +36,13 @@ void TFT_Init()
 {
 	TFT_WriteCmd(0xFF);
 	TFT_WriteCmd(0xFF);
-	HAL_Delay(5);
+	delay(5);
 
 	TFT_WriteCmd(0xFF);
 	TFT_WriteCmd(0xFF);
 	TFT_WriteCmd(0xFF);
 	TFT_WriteCmd(0xFF);
-	HAL_Delay(10);
+	delay(10);
 	
 	TFT_WriteCmd(0xB0);
 	TFT_WriteData(0x00);
@@ -146,10 +146,10 @@ void TFT_Init()
 	TFT_WriteData(0x55);
 
 	TFT_WriteCmd(0x11);
-	HAL_Delay(150);
+	delay(150);
 	
 	TFT_WriteCmd(0x29);
-	HAL_Delay(30);
+	delay(30);
 		
 	TFT_WriteCmd(0x2C);
 }
@@ -169,7 +169,7 @@ void TFT_Clear(uint16_t color)
 {
 	uint16_t i, j ;
 
-	TFT_Set_Window(0, 0, WIDTH-1,HEIGHT-1);	 //×÷ÓÃÇøÓò
+	TFT_Set_Window(0, 0, WIDTH-1,HEIGHT-1);	 //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   	for(i=0; i<WIDTH; i++)
 	{
 		for (j=0; j<HEIGHT; j++)
@@ -179,10 +179,10 @@ void TFT_Clear(uint16_t color)
 	} 
 }
 
-//ÉèÖÃ´°¿Ú,²¢×Ô¶¯ÉèÖÃ»­µã×ø±êµ½´°¿Ú×óÉÏ½Ç(sx,sy).
-//sx,sy:´°¿ÚÆðÊ¼×ø±ê(×óÉÏ½Ç)
-//width,height:´°¿Ú¿í¶ÈºÍ¸ß¶È,±ØÐë´óÓÚ0!!
-//´°Ìå´óÐ¡:width*height. 
+//ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½êµ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½(sx,sy).
+//sx,sy:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Ï½ï¿½)
+//width,height:ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ÈºÍ¸ß¶ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0!!
+//ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡:width*height. 
 void TFT_Set_Window(uint16_t sx,uint16_t sy,uint16_t width,uint16_t height)
 {
 	TFT_WriteCmd(0x2A);
@@ -206,57 +206,51 @@ void TFT_DrawFRONT_COLOR(uint16_t x,uint16_t y,uint16_t color)
 	TFT_WriteData_Color(color);	
 }
 
-//ÔÚÖ¸¶¨Î»ÖÃÏÔÊ¾Ò»¸ö×Ö·û
-//x,y:ÆðÊ¼×ø±ê
-//num:ÒªÏÔÊ¾µÄ×Ö·û:" "--->"~"
-//size:×ÖÌå´óÐ¡ 12/16/24
-//mode:µþ¼Ó·½Ê½(1)»¹ÊÇ·Çµþ¼Ó·½Ê½(0)
+//ï¿½ï¿½Ö¸ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½Ê¾Ò»ï¿½ï¿½ï¿½Ö·ï¿½
+//x,y:ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
+//num:Òªï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Ö·ï¿½:" "--->"~"
+//size:ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ 12/16/24
+//mode:ï¿½ï¿½ï¿½Ó·ï¿½Ê½(1)ï¿½ï¿½ï¿½Ç·Çµï¿½ï¿½Ó·ï¿½Ê½(0)
 void TFT_ShowChar(uint16_t x,uint16_t y,uint8_t num,uint8_t size,uint8_t mode)
 {  							  
     uint8_t temp,t1,t;
 	uint16_t y0=y;
-	uint8_t csize=(size/8+((size%8)?1:0))*(size/2);		//µÃµ½×ÖÌåÒ»¸ö×Ö·û¶ÔÓ¦µãÕó¼¯ËùÕ¼µÄ×Ö½ÚÊý	
- 	num=num-' ';//µÃµ½Æ«ÒÆºóµÄÖµ£¨ASCII×Ö¿âÊÇ´Ó¿Õ¸ñ¿ªÊ¼È¡Ä££¬ËùÒÔ-' '¾ÍÊÇ¶ÔÓ¦×Ö·ûµÄ×Ö¿â£©
+	uint8_t csize=(size/8+((size%8)?1:0))*(size/2);		//ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½	
+ 	num=num-' ';//ï¿½Ãµï¿½Æ«ï¿½Æºï¿½ï¿½Öµï¿½ï¿½ASCIIï¿½Ö¿ï¿½ï¿½Ç´Ó¿Õ¸ï¿½Ê¼È¡Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-' 'ï¿½ï¿½ï¿½Ç¶ï¿½Ó¦ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ö¿â£©
 	for(t=0;t<csize;t++)
 	{   
-		if(size==12)temp=ascii_1206[num][t]; 	 	//µ÷ÓÃ1206×ÖÌå
-		else if(size==16)temp=ascii_1608[num][t];	//µ÷ÓÃ1608×ÖÌå
-		else if(size==24)temp=ascii_2412[num][t];	//µ÷ÓÃ2412×ÖÌå
-		else return;								//Ã»ÓÐµÄ×Ö¿â
+		if(size==12)temp=ascii_1206[num][t]; 	 	//ï¿½ï¿½ï¿½ï¿½1206ï¿½ï¿½ï¿½ï¿½
+		else if(size==16)temp=ascii_1608[num][t];	//ï¿½ï¿½ï¿½ï¿½1608ï¿½ï¿½ï¿½ï¿½
+		else if(size==24)temp=ascii_2412[num][t];	//ï¿½ï¿½ï¿½ï¿½2412ï¿½ï¿½ï¿½ï¿½
+		else return;								//Ã»ï¿½Ðµï¿½ï¿½Ö¿ï¿½
 		for(t1=0;t1<8;t1++)
 		{			    
 			if(temp&0x80)TFT_DrawFRONT_COLOR(x,y,FRONT_COLOR);
 			else if(mode==0)TFT_DrawFRONT_COLOR(x,y,BACK_COLOR);
 			temp<<=1;
 			y++;
-			if(y>=HEIGHT)return;		//³¬ÇøÓòÁË
+			if(y>=HEIGHT)return;		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			if((y-y0)==size)
 			{
 				y=y0;
 				x++;
-				if(x>=HEIGHT)return;	//³¬ÇøÓòÁË
+				if(x>=HEIGHT)return;	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				break;
 			}
 		}  	 
 	}  	    	   	 	  
 }
 
-//ÏÔÊ¾×Ö·û´®
-//x,y:Æðµã×ø±ê
-//width,height:ÇøÓò´óÐ¡  
-//size:×ÖÌå´óÐ¡
-//*p:×Ö·û´®ÆðÊ¼µØÖ·		  
-void TFT_ShowString(uint16_t x,uint16_t y,uint16_t width,uint16_t height,uint8_t size,uint8_t *p)
-{         
-	uint8_t x0=x;
-	width+=x;
-	height+=y;
-    while((*p<='~')&&(*p>=' '))//ÅÐ¶ÏÊÇ²»ÊÇ·Ç·¨×Ö·û!
-    {       
-        if(x>=width){x=x0;y+=size;}
-        if(y>=height)break;//ÍË³ö
-        TFT_ShowChar(x,y,*p,size,0);
-        x+=size/2;
-        p++;
-    }  
+
+void TFT_ShowLine(uint16_t x,uint16_t y,uint8_t size,uint8_t *p)
+{
+	uint8_t x0 = x;
+	while((*p<='~')&&(*p>=' '))//Ã…ÃÂ¶ÃÃŠÃ‡Â²Â»ÃŠÃ‡Â·Ã‡Â·Â¨Ã—Ã–Â·Ã»!
+	{       
+			if((x > WIDTH) || (y > HEIGHT))
+				break;
+			TFT_ShowChar(x,y,*p,size,0);
+			x+=size/2;
+			p++;
+	}  
 }

@@ -6,6 +6,8 @@
 #define HEIGHT	480
 #define WIDTH		320
 
+#define delay HAL_Delay
+
 #define FRONT_COLOR 0xFFFF
 #define BACK_COLOR 	0x0000
 
@@ -20,5 +22,5 @@ void TFT_Clear(uint16_t color);
 void TFT_Set_Window(uint16_t sx,uint16_t sy,uint16_t width,uint16_t height);
 void TFT_DrawFRONT_COLOR(uint16_t x,uint16_t y,uint16_t color);
 void TFT_ShowChar(uint16_t x,uint16_t y,uint8_t num,uint8_t font,uint8_t mode);
-void TFT_ShowString(uint16_t x,uint16_t y,uint16_t width,uint16_t height,uint8_t size,uint8_t *p);
+void TFT_ShowLine(uint16_t x,uint16_t y,uint8_t size,uint8_t *p);
 #endif
