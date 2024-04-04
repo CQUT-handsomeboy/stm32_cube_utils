@@ -30,7 +30,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 ## 串口中断回调函数
 
 ```c
-HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 ```
 
 ## 定时器中断回调函数
