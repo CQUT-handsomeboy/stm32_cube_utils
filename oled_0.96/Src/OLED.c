@@ -3,6 +3,7 @@
 
 #include "OLED_Font.h"
 #include "OLED.h"
+#include "i2c.h"
 
 #define OLED_SCL_PORT OLEDSCL_GPIO_Port
 #define OLED_SCL_PIN	OLEDSCL_Pin
@@ -45,6 +46,9 @@ void OLED_I2C_SendByte(uint8_t Byte)
 	OLED_W_SCL(0);
 }
 
+#ifdef OLED_SOFTWARE_I2C
+/* 软件I2C */
+
 /* OLEDI2C发送命令 */
 void OLED_WriteCommand(uint8_t Command)
 {
@@ -64,6 +68,27 @@ void OLED_WriteData(uint8_t Data)
 	OLED_I2C_SendByte(Data);
 	OLED_I2C_Stop();
 }
+
+#endif
+
+#ifdef OLED_HARDWARE_I2C
+/* 硬件I2C */
+
+/* OLEDI2C发送命令 */
+void OLED_WriteCommand(uint8_t cmd)
+{
+	uint8_t sendBuffer[2] = {0x00,cmd};
+	HAL_I2C_Master_Transmit(&hi2c1,OLED_ADDRESS,sendBuffer,2,HAL_MAX_DELAY);
+}
+
+/* OLEDI2C写数据 */
+void OLED_WriteData(uint8_t data)
+{
+	uint8_t sendBuffer[2] = {0x40,data};
+	HAL_I2C_Master_Transmit(&hi2c1,OLED_ADDRESS,sendBuffer,2,HAL_MAX_DELAY);
+}
+
+#endif
 
 /* OLEDI2C刷新屏幕 */
 void OLED_Refresh(void)
